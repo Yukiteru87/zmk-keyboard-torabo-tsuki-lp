@@ -3,6 +3,33 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <behaviors/runtime-input-processor.dtsi>
+
+// ---- トラックボールの初期設定 (DYA Studio から実行時に変更・保存できる) ----
+// オートマウスレイヤー: ボールを動かすと layer 1 (MOUSE) を自動で有効化
+//   activation-delay   : 直前のキー入力からこの時間はAMLを発動しない(タイピング中の誤発動防止)
+//   deactivation-delay : ボールを止めてからAMLを解除するまでの時間
+//   MOUSE レイヤーで &trans 以外のキー(クリック等)や修飾キーを押してもAMLは解除されない
+&mouse_runtime_input_processor {
+    temp-layer-enabled;
+    temp-layer = <1>;
+    temp-layer-activation-delay-ms = <200>;
+    temp-layer-deactivation-delay-ms = <800>;
+};
+
+// スクロール: layer 4 (SCROLL) が有効な間だけボールの動きをスクロールに変換
+&scroll_runtime_input_processor {
+    active-layers = <(1 << 4)>;
+    scale-multiplier = <1>;
+    scale-divisor = <8>;
+};
+
+// 精密モード: 押している間ポインタ速度を 1/2 にする
+&rip_ldpi {
+    display-name = "Precision (0.5x)";
+    scale-multiplier = <1>;
+    scale-divisor = <2>;
+};
 
 / {
     combos {
@@ -19,6 +46,7 @@
         compatible = "zmk,keymap";
 
         layer_0 {
+            display-name = "BASE";
             bindings = <
 &kp ESC    &kp N1     &kp N2    &kp N3    &kp N4    &kp N5                                                         &kp N6       &kp N7    &kp N8     &kp N9    &kp N0                &kp BSPC
 &kp TAB    &kp Q      &kp W     &kp E     &kp R     &kp T                                                          &kp Y        &kp U     &kp I      &kp O     &kp P                 &kp BSPC
@@ -29,16 +57,18 @@
         };
 
         layer_1 {
+            display-name = "MOUSE";
             bindings = <
-&trans  &trans  &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
-&trans  &trans  &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
-&trans  &trans  &trans  &mkp RCLK  &mkp LCLK  &trans  &trans  &trans  &trans  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans
-&trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans
-&trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans
+&trans  &trans      &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
+&trans  &trans      &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
+&trans  &rip_ldpi   &mo 4   &mkp RCLK  &mkp LCLK  &trans  &trans  &trans  &trans  &mkp LCLK  &mkp RCLK  &mo 4   &trans  &trans
+&trans  &trans      &trans  &trans     &trans     &trans  &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans
+&trans  &trans      &trans  &trans     &trans     &trans  &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans
             >;
         };
 
         layer_2 {
+            display-name = "SYMBOL";
             bindings = <
 &trans  &trans            &trans            &trans      &trans      &trans                      &trans          &trans         &trans            &trans             &trans         &trans
 &trans  &kp LS(NUMBER_1)  &kp LS(NUMBER_2)  &kp LS(N3)  &kp LS(N4)  &kp LS(N5)                  &kp LS(N6)      &kp LS(N7)     &kp LS(N8)        &kp LS(N9)         &kp LS(N0)     &trans
@@ -49,12 +79,24 @@
         };
 
         layer_3 {
+            display-name = "NAV";
             bindings = <
 &trans  &trans   &trans   &trans        &trans        &trans                      &trans            &trans     &trans         &trans     &trans      &trans
 &trans  &kp F1   &kp F2   &kp F3        &kp F4        &kp F5                      &kp HOME          &kp PG_UP  &kp PAGE_DOWN  &kp END    &kp ESCAPE  &trans
 &trans  &kp F6   &kp F7   &kp F8        &kp F9        &kp F10     &trans  &trans  &kp LEFT          &kp DOWN   &kp UP_ARROW   &kp RIGHT  &kp TAB     &trans
 &trans  &kp F11  &kp F12  &out OUT_USB  &out OUT_BLE  &bt BT_NXT  &trans  &trans  &kp SINGLE_QUOTE  &kp DQT    &kp GRAVE      &kp TILDE  &kp PIPE    &trans
 &trans  &trans   &trans   &trans        &kp DELETE    &kp TAB     &trans  &trans  &trans            &trans     &trans         &trans     &trans      &trans
+            >;
+        };
+
+        layer_4 {
+            display-name = "SCROLL";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
             >;
         };
     };
