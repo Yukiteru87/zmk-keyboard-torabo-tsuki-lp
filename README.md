@@ -3,11 +3,12 @@
 
 * _centralがついているuf2をトラックボールがついている方に、_peripheralを反対側に書き込んでください
 * キーマップはkeymap-editorおよびzmk-studioで編集できます
-## DYA Studio 対応 (dya-studio ブランチ)
+## DYA Studio 対応 (dya-studio: ZMK v0.3 系 / dya-studio-v04: ZMK v0.4 系)
 
 [DYA Studio](https://studio.dya.cormoran.works/) から、ビルドし直さずにトラックボールの設定を変更できます。
 
-* ZMK は cormoran さんの fork (`v0.3-branch+dya`)。DYA Studio 用モジュールは ZMK v0.3 に対応する最後のコミットに固定
+* dya-studio: cormoran さんの fork `v0.3-branch+dya`。DYA Studio 用モジュールは v0.3 対応の最後のコミットに固定
+* dya-studio-v04: cormoran さんの fork `main+dya` (ZMK v0.4 / Zephyr 4.1)。DYA Studio 用モジュールは最新。実機での動作実績はまだ少ない
 * 初回は左右とも `settings_reset` → 通常ファームの順に書き込み、Bluetooth を再ペアリング
 
 | 機能 | 初期設定 (`config/keymap.keymap`) |
