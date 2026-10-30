@@ -1,0 +1,6 @@
+# GitHub Actions (zmkfirmware/zmk build-user-config.yml@main) の "Check if building a board
+# without explicit ZMK compat" ステップ対策。
+# bmp_boost ボード (zmk-component-bmp-boost master) は ZMK v0.4 用に移行済みだが
+# ZMK_BOARD_COMPAT を宣言していないため、ビルド成功後にこのステップが失敗する。
+config ZMK_BOARD_COMPAT
+    default y if BOARD_BMP_BOOST
