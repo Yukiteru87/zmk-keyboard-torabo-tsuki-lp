@@ -48,7 +48,10 @@
 //   activation-delay   : 直前のキー入力からこの時間はAMLを発動しない(タイピング中の誤発動防止)
 //   deactivation-delay : ボールを止めてからAMLを解除するまでの時間
 //   MOUSE レイヤーで &trans 以外のキー(クリック等)や修飾キーを押してもAMLは解除されない
+// ポインタ速度: 0.5 倍 (DYA Studio で保存した値があればそちらが優先される)
 &mouse_runtime_input_processor {
+    scale-multiplier = <1>;
+    scale-divisor = <2>;
     temp-layer-enabled;
     temp-layer = <1>;
     temp-layer-activation-delay-ms = <200>;
@@ -62,11 +65,11 @@
     scale-divisor = <8>;
 };
 
-// 精密モード: 押している間ポインタ速度を 1/2 にする (全体速度とは別の固定値)
+// 精密モード: 押している間ポインタ速度を 1/4 にする (全体速度 0.5 の半分。全体速度とは別の固定値)
 &rip_ldpi {
-    display-name = "Precision (0.5x)";
+    display-name = "Precision (0.25x)";
     scale-multiplier = <1>;
-    scale-divisor = <2>;
+    scale-divisor = <4>;
 };
 
 // ---- タップ / ホールドの判定 ----
