@@ -5,10 +5,10 @@
 #include <dt-bindings/zmk/pointing.h>
 #include <behaviors/runtime-input-processor.dtsi>
 
-// torabo-tsuki LP XS 用キーマップ (案 B: 記号直打ち)
+// torabo-tsuki LP XS 用キーマップ (案 C: 統計型 / LOWER・RAISE・ADJUST の定番構成)
 // - 位置は L 配列の 66 個の通し番号で並べている。XS に無い位置は &none
 // - XS の右手最下段は、ボールのため真ん中の 2 キー (L61, L62) が無い
-// - レイヤー: 0 BASE / 1 MOUSE / 2 SYM / 3 NAV / 4 SCROLL / 5 NUM / 6 ADJUST
+// - レイヤー: 0 BASE / 1 MOUSE / 2 LOWER / 3 RAISE / 4 SCROLL / 5 ADJUST
 //   (MOUSE=1 と SCROLL=4 は runtime input processor の設定と対応しているので番号を変えない)
 
 // ---- OS の配列が JIS のときの記号 (ZMK のキー名は US 配列基準のため読み替える) ----
@@ -73,7 +73,7 @@
 };
 
 // ---- タップ / ホールドの判定 ----
-// Tab/Ctrl, 英数/SYM, かな/NAV: 他のキーを押して離すまで続けたらホールド
+// Tab/Ctrl(左外側の親指), 英数/LOWER, かな/RAISE: 他のキーを押して離すまで続けたらホールド
 &mt {
     flavor = "balanced";
     tapping-term-ms = <200>;
@@ -87,28 +87,12 @@
 };
 
 / {
-    behaviors {
-        // Space/NUM: 文字を打った直後(125ms 以内)は必ず Space。長押し(200ms)で NUM
-        lt_spc: layer_tap_space {
-            compatible = "zmk,behavior-hold-tap";
-            display-name = "Space / Layer";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <175>;
-            require-prior-idle-ms = <125>;
-            bindings = <&mo>, <&kp>;
-        };
-    };
-};
-
-/ {
     conditional_layers {
         compatible = "zmk,conditional-layers";
-        // 英数(SYM) と かな(NAV) を同時にホールドすると ADJUST
+        // 英数(LOWER) と かな(RAISE) を同時にホールドすると ADJUST
         adjust {
             if-layers = <2 3>;
-            then-layer = <6>;
+            then-layer = <5>;
         };
     };
 
@@ -118,11 +102,11 @@
         layer_0 {
             display-name = "BASE";
             bindings = <
-&none            &none            &none            &none            &none            &none            &none            &none            &none            &none            &none            &none
-&none            &kp Q            &kp W            &kp E            &kp R            &kp T            &kp Y            &kp U            &kp I            &kp O            &kp P            &none
-&none            &kp A            &kp S            &kp D            &kp F            &kp G            &none            &none            &kp H            &kp J            &kp K            &kp L            &kp SEMI         &none
-&none            &kp Z            &kp X            &kp C            &kp V            &kp B            &kp ESC          &kp MINUS        &kp N            &kp M            &kp COMMA        &kp DOT          &kp SLASH        &none
-&none            &mt LCTRL TAB    &kp LGUI         &kp LALT         &kp LSHFT        &lt 2 LANG2      &lt_spc 5 SPACE  &kp ENTER        &lt 3 LANG1      &none            &none            &kp BSPC         &kp RSHFT        &none
+&none          &none          &none          &none          &none          &none          &none          &none          &none          &none          &none          &none
+&none          &kp Q          &kp W          &kp E          &kp R          &kp T          &kp Y          &kp U          &kp I          &kp O          &kp P          &none
+&none          &kp A          &kp S          &kp D          &kp F          &kp G          &none          &none          &kp H          &kp J          &kp K          &kp L          &kp SEMI       &none
+&none          &kp Z          &kp X          &kp C          &kp V          &kp B          &kp ESC        &kp MINUS      &kp N          &kp M          &kp COMMA      &kp DOT        &kp SLASH      &none
+&none          &kp LSHFT      &kp LGUI       &kp LALT       &mt LCTRL TAB  &lt 2 LANG2    &kp SPACE      &kp ENTER      &lt 3 LANG1    &none          &none          &kp BSPC       &kp RSHFT      &none
             >;
         };
 
@@ -138,24 +122,24 @@
         };
 
         layer_2 {
-            display-name = "SYM";
+            display-name = "LOWER";
             bindings = <
-&none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none
-&none         &kp JP_EXCL   &kp JP_DQT    &kp JP_HASH   &kp JP_DLLR   &kp JP_PRCNT  &kp JP_AMPS   &kp JP_LBKT   &kp JP_RBKT   &kp JP_SQT    &kp JP_AT     &none
-&none         &kp JP_TILDE  &kp JP_CARET  &kp JP_EQUAL  &kp JP_MINUS  &kp JP_PLUS   &none         &none         &kp JP_LT     &kp JP_LPAR   &kp JP_RPAR   &kp JP_GT     &kp JP_COLON  &none
-&none         &kp JP_GRAVE  &kp JP_PIPE   &kp JP_BSLH   &kp JP_UNDER  &kp JP_STAR   &kp JP_YEN    &trans        &kp JP_QMARK  &kp JP_LBRC   &kp JP_RBRC   &trans        &trans        &none
-&none         &trans        &trans        &trans        &trans        &trans        &trans        &trans        &trans        &none         &none         &trans        &trans        &none
+&none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+&none      &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8     &kp N9     &kp N0     &none
+&none      &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &none      &none      &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &none      &none
+&none      &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12    &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &none      &none
+&none      &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &none      &none      &kp DEL    &trans     &none
             >;
         };
 
         layer_3 {
-            display-name = "NAV";
+            display-name = "RAISE";
             bindings = <
-&none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
-&none      &none      &none      &kp UP     &none      &none      &none      &none      &kp PSCRN  &none      &none      &none
-&none      &none      &kp LEFT   &kp DOWN   &kp RIGHT  &none      &none      &none      &none      &kp INS    &kp HOME   &kp PG_UP  &kp BSPC   &none
-&none      &none      &none      &none      &none      &none      &none      &none      &none      &kp DEL    &kp END    &kp PG_DN  &none      &none
-&none      &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &none      &none      &trans     &trans     &none
+&none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none
+&none         &kp JP_EXCL   &kp JP_AT     &kp JP_HASH   &kp JP_DLLR   &kp JP_PRCNT  &kp JP_CARET  &kp JP_AMPS   &kp JP_STAR   &kp JP_LPAR   &kp JP_RPAR   &none
+&none         &kp JP_SQT    &kp JP_DQT    &kp JP_COLON  &kp JP_TILDE  &kp JP_YEN    &none         &none         &kp JP_MINUS  &kp JP_EQUAL  &kp JP_LBKT   &kp JP_RBKT   &kp JP_BSLH   &none
+&none         &kp JP_GRAVE  &none         &none         &none         &none         &none         &none         &kp JP_UNDER  &kp JP_PLUS   &kp JP_LBRC   &kp JP_RBRC   &kp JP_PIPE   &none
+&none         &trans        &trans        &trans        &trans        &trans        &trans        &trans        &trans        &none         &none         &trans        &trans        &none
             >;
         };
 
@@ -171,17 +155,6 @@
         };
 
         layer_5 {
-            display-name = "NUM";
-            bindings = <
-&none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none
-&none         &kp F1        &kp F2        &kp F3        &kp F4        &kp F5        &kp JP_SLASH  &kp N7        &kp N8        &kp N9        &kp JP_MINUS  &none
-&none         &kp F6        &kp F7        &kp F8        &kp F9        &kp F10       &none         &none         &kp JP_STAR   &kp N4        &kp N5        &kp N6        &kp JP_PLUS   &none
-&none         &kp F11       &kp F12       &none         &none         &none         &none         &none         &kp DOT       &kp N1        &kp N2        &kp N3        &kp JP_EQUAL  &none
-&none         &trans        &trans        &trans        &trans        &trans        &trans        &kp N0        &trans        &none         &none         &trans        &trans        &none
-            >;
-        };
-
-        layer_6 {
             display-name = "ADJUST";
             bindings = <
 &none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none
